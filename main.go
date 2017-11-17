@@ -3,9 +3,11 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math/rand"
 	"os"
 	"regexp"
 	"strings"
+	"time"
 )
 
 type Response struct {
@@ -39,6 +41,28 @@ func buildResponseList() []Response {
 	return allResponses //return list
 }
 
+//function for generating a random number based on the size of the list passed in
+//adapted from problem sheets 1
+func getRandomAnswer(answers []string) string {
+	rand.Seed(time.Now().UnixNano()) // seed to make it return different values.
+	index := rand.Intn(len(answers))
+	return answers[index]
+}
+
+//function for taking in user input and crafting a response based on what the userInput is
+func Ask(userInput string) string {
+	responses := buildResponseList()
+	for _, resp := range responses { // look at every single response/pattern/answers
+		if resp.re.MatchString(userInput) {
+
+			Answer := getRandomAnswer(resp.responses) // get random element.
+			return Answer
+		}
+	}
+	// if we're down here, it means there were no matches;
+	return "Im sorry I don't follow what you mean, could you clarify that for me?" // catch all.
+}
+
 //main func where it loops until the user quits
 
 func main() {
@@ -50,7 +74,7 @@ func main() {
 		userInput, _ := reader.ReadString('\n')
 		// Trim the user input's end of line characters.
 		userInput = strings.Trim(userInput, "\r\n")
-		fmt.Println(buildResponseList())
+		fmt.Println(Ask(userInput))
 		//Quit program
 		if strings.Compare(strings.ToLower(strings.TrimSpace(userInput)), "quit") == 0 {
 			fmt.Println("Bye.")
