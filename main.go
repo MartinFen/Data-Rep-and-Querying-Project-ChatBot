@@ -95,9 +95,17 @@ func Ask(userInput string) string {
 	responses := buildResponseList()
 	for _, resp := range responses { // look at every single response/pattern/answers
 		if resp.re.MatchString(userInput) {
-
-			Answer := getRandomAnswer(resp.responses) // get random element.
-			return Answer
+			match := resp.re.FindStringSubmatch(userInput)
+			//match[0] is full match, match[1] is the capture group
+			captured := match[1]
+			//fmt.Println(match[0])
+			// remove punctuation here
+			captured = subWords(captured)
+			formatAnswer := getRandomAnswer(resp.responses) // get random element.
+			if strings.Contains(formatAnswer, "%s") {       // string needs to be formatted
+				formatAnswer = fmt.Sprintf(formatAnswer, captured)
+			}
+			return formatAnswer
 		}
 	}
 	// if we're down here, it means there were no matches;
@@ -113,8 +121,8 @@ func main() {
 		userInput, _ := reader.ReadString('\n')
 		// Trim the user input's end of line characters.
 		userInput = strings.Trim(userInput, "\r\n")
-		//fmt.Println(Ask(userInput))
-		fmt.Println(subWords(userInput))
+		fmt.Println(Ask(userInput))
+		//fmt.Println(subWords(userInput))
 		//Quit program
 		if strings.Compare(strings.ToLower(strings.TrimSpace(userInput)), "quit") == 0 {
 			fmt.Println("Bye.")
