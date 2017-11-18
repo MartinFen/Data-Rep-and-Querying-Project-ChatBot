@@ -10,6 +10,9 @@ import (
 	"time"
 )
 
+//empty map
+var reflections map[string]string
+
 type Response struct {
 	re        *regexp.Regexp
 	responses []string
@@ -21,7 +24,14 @@ func buildResponseList() []Response {
 	//empty array of structs
 	allResponses := []Response{}
 	//read in a file
-	file, _ := os.Open("./data/patterns.dat")
+	//read in a file
+	file, err := os.Open("./data/patterns.dat")
+	//theres an error crash
+	if err != nil {
+		panic(err)
+	}
+	//close file
+	defer file.Close()
 	//create scanner
 	scanner := bufio.NewScanner(file)
 	//loop through scanner until theres nothing left to scan
@@ -41,15 +51,38 @@ func buildResponseList() []Response {
 	return allResponses //return list
 }
 
-//function for generating a random number based on the size of the list passed in
-//adapted from problem sheets 1
 func getRandomAnswer(answers []string) string {
 	rand.Seed(time.Now().UnixNano()) // seed to make it return different values.
 	index := rand.Intn(len(answers))
 	return answers[index]
 }
 
-//function for taking in user input and crafting a response based on what the userInput is
+func subWords(original string) string {
+
+	//adapted from https://www.smallsurething.com/implementing-the-famous-eliza-chatbot-in-python/
+	if reflections == nil { // map hasn't been made yet
+		reflections = map[string]string{ // will only happen once.
+			"am":     "are",
+			"was":    "were",
+			"i":      "you",
+			"i'd":    "you would",
+			"i've":   "you have",
+			"i'll":   "you will",
+			"my":     "your",
+			"are":    "am",
+			"you've": "I have",
+			"you'll": "I will",
+			"your":   "my",
+			"yours":  "mine",
+			"you":    "me",
+			"me":     "you",
+			"myself": "yourself",
+		}
+	}
+	words := strings.Split(original, " ")
+	return words[0]
+}
+
 func Ask(userInput string) string {
 	responses := buildResponseList()
 	for _, resp := range responses { // look at every single response/pattern/answers
@@ -63,8 +96,6 @@ func Ask(userInput string) string {
 	return "Im sorry I don't follow what you mean, could you clarify that for me?" // catch all.
 }
 
-//main func where it loops until the user quits
-
 func main() {
 	fmt.Println("Hi my name is Eliza, whats yours?")
 	for reader := bufio.NewReader(os.Stdin); ; {
@@ -74,7 +105,8 @@ func main() {
 		userInput, _ := reader.ReadString('\n')
 		// Trim the user input's end of line characters.
 		userInput = strings.Trim(userInput, "\r\n")
-		fmt.Println(Ask(userInput))
+		//fmt.Println(Ask(userInput))
+		fmt.Println(subWords(userInput))
 		//Quit program
 		if strings.Compare(strings.ToLower(strings.TrimSpace(userInput)), "quit") == 0 {
 			fmt.Println("Bye.")
