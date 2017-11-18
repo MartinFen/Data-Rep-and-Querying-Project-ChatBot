@@ -24,7 +24,6 @@ func buildResponseList() []Response {
 	//empty array of structs
 	allResponses := []Response{}
 	//read in a file
-	//read in a file
 	file, err := os.Open("./data/patterns.dat")
 	//theres an error crash
 	if err != nil {
@@ -79,8 +78,17 @@ func subWords(original string) string {
 			"myself": "yourself",
 		}
 	}
+	//split up string that user input into a string array then and loop through array
 	words := strings.Split(original, " ")
-	return words[0]
+	for index, word := range words {
+		// we want to change the word if it's in the map
+		val, ok := reflections[word]
+		if ok { // value WAS in the map
+			// we want to swap with the value
+			words[index] = val // eg. you -> me
+		}
+	}
+	return strings.Join(words, " ")
 }
 
 func Ask(userInput string) string {
