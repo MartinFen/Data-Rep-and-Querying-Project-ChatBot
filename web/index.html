@@ -4,7 +4,16 @@
     <title>Eliza written in Go</title>
     <!-- adapted from stackoverflow post -->
     <style type="text/css">
-    
+      body {
+        padding-top: 60px;
+        padding-bottom: 60px;
+        padding-left: 60px;
+        padding-right:60px;
+    }
+    .footer {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
     </style>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -37,14 +46,36 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <script>  
+      //ajax repo
+      //https://github.com/data-representation/data-representation.github.io/blob/master/notes/ajax.md
+      //adapted from https://stackoverflow.com/questions/16908526/html-how-to-do-error-checking-for-null-value-input-of-textarea-in-javascript
       $("#user-input-form").submit(
         function(event) {
           event.preventDefault();
-          $.get('/user-input', { value: $('#user-input').val() } )
-            .done(function (data) {
-              $('#output-area').val(data);
+          
+          if (document.forms[0].elements['user-input'].value=='') {
+            $('#output-area').append('<li class="list-group-item bg-dark text-white font-italic">' + 'User: ' + $('#user-input').val() + '</li>');
+            setTimeout(function(){
+                $('#output-area').append('<li class="list-group-item bg-dark text-white font-italic">'+'Eliza: Am I getting the silent treatment?' + '</li>');
+            }, 500);
+          } else {
+            $('#output-area').append('<li class="list-group-item bg-dark text-white font-italic">' +'User: '+ $('#user-input').val() + '</li>');
+            
+            $.get('/user-input', {value:$('#user-input').val()}).done(function(data){
+              setTimeout(function(){
+                $('#output-area').append('<li class="list-group-item bg-dark text-white font-italic">'+ 'Eliza: ' + data + '</li>');
+              }, 500);
             })
-        });
+          } 
+      });
+      //Graphics programming lab 4
+		  $('#user-input').on('keyup', function(event) {
+			  switch (event.which) {
+          case 13:
+            $(this).val("");
+            break;  
+        }
+      });
     </script>
   </body>
 </html>
