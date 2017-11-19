@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"math/rand"
+	"net/http"
 	"os"
 	"regexp"
 	"strings"
@@ -112,7 +113,24 @@ func Ask(userInput string) string {
 	return "Im sorry I don't follow what you mean, could you clarify that for me?" // catch all.
 }
 
+//adapted from ajax repo
+func userinputhandler(w http.ResponseWriter, r *http.Request) {
+
+	userInput := strings.ToLower(r.URL.Query().Get("value"))
+	fmt.Fprintf(w, "%s", Ask(userInput)) //Carry out the conversation with eliza
+
+}
+
 func main() {
+	//adapted from ajax
+	fs := http.FileServer(http.Dir("web"))
+	http.Handle("/", fs)
+
+	http.HandleFunc("/user-input", userinputhandler)
+	http.ListenAndServe(":8080", nil)
+}
+
+/*func main() {
 	fmt.Println("Hi my name is Eliza, whats yours?")
 	for reader := bufio.NewReader(os.Stdin); ; {
 		// Print user prompt.
@@ -121,12 +139,12 @@ func main() {
 		userInput, _ := reader.ReadString('\n')
 		// Trim the user input's end of line characters.
 		userInput = strings.Trim(userInput, "\r\n")
+
 		fmt.Println(Ask(userInput))
-		//fmt.Println(subWords(userInput))
 		//Quit program
 		if strings.Compare(strings.ToLower(strings.TrimSpace(userInput)), "quit") == 0 {
 			fmt.Println("Bye.")
 			break
 		}
 	}
-}
+}*/
