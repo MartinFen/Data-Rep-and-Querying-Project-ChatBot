@@ -117,8 +117,16 @@ func Ask(userInput string) string {
 func userinputhandler(w http.ResponseWriter, r *http.Request) {
 
 	userInput := strings.ToLower(r.URL.Query().Get("value"))
-	fmt.Fprintf(w, "%s", Ask(userInput)) //Carry out the conversation with eliza
 
+	if strings.Contains(strings.ToLower(userInput), "bye") {
+		fmt.Fprintf(w, "%s", Ask(userInput))
+		timer := time.NewTimer(time.Second * 2)
+		<-timer.C
+		os.Exit(3)
+
+	} else {
+		fmt.Fprintf(w, "%s", Ask(userInput)) //Carry out the conversation with eliza
+	}
 }
 
 func main() {
