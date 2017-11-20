@@ -30,7 +30,7 @@ why can\'?t I ([^\?]*)\??
 Do you think you should be able to %s?;If you could %s;what would you do?;I don't know -- why can't you %s?;;Have you really tried?
 why don\'?t you ([^\?]*)\??
 Do you really think I don't %s?;Perhaps eventually I will %s.;Do you really want me to %s?
-wre you ([^\?]*)\??
+were you ([^\?]*)\??
 Why does it matter whether I am %s?;Would you prefer it if I were not %s?;Perhaps you believe I am %s.;I may be %s -- what do you think?
 what (.*)
 Why do you ask?;How would an answer to that help you?;What do you think?
@@ -69,8 +69,7 @@ Are you really talking about me?;Does it seem strange to talk to a computer?;How
 (.*) life(.*)
 Life is a precious thing.;Life is the most important thing to take care of.;How do you feel about life?
 (.*) mother(.*)
-Tell me more about your mother.;What was your relationship with your mother like?;How do you feel about your mother?;How does this relate to your feelings 
-today?;Good family relations are important.
+Tell me more about your mother.;What was your relationship with your mother like?;How do you feel about your mother?;How does this relate to your feelings today?;Good family relations are important.
 (.*) father(.*)
 Tell me more about your father.;How did your father make you feel?;How do you feel about your father?;Does your relationship with your father relate to your feelings today?;Do you have trouble showing affection with your family?
 (.*) child(.*)
