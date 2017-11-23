@@ -14,11 +14,14 @@ import (
 //empty map
 var reflections map[string]string
 
+//empty struct
 type Response struct {
 	re        *regexp.Regexp
 	responses []string
 }
 
+//Func for reading in file contents and building a list of structs with each REGEX pattern its corrisponding responses.
+//adapted from a group session
 func buildResponseList() []Response {
 	//empty struct
 	response := Response{}
@@ -51,14 +54,17 @@ func buildResponseList() []Response {
 	return allResponses //return list
 }
 
+//Func for generating a randon number
+//adapted from https://github.com/MartinFen/Go-Problem-Sheet-2-Answers/tree/master/Prob-5
 func getRandomAnswer(answers []string) string {
 	rand.Seed(time.Now().UnixNano()) // seed to make it return different values.
 	index := rand.Intn(len(answers))
 	return answers[index]
 }
 
+//Func for swapping certain words by spliting up input and swapping words and returning the string
+//adapted from group session
 func subWords(original string) string {
-
 	//adapted from https://www.smallsurething.com/implementing-the-famous-eliza-chatbot-in-python/
 	if reflections == nil { // map hasn't been made yet
 		reflections = map[string]string{ // will only happen once.
@@ -79,22 +85,23 @@ func subWords(original string) string {
 			"myself": "yourself",
 		}
 	}
-	//split up string that user input into a string array then and loop through array
+	//split up string that user input into a string array then and loop through array such as you:me
 	words := strings.Split(original, " ")
 	for index, word := range words {
-		// we want to change the word if it's in the map
+		//change the word if it's found in the map
 		val, ok := reflections[word]
-		if ok { // value WAS in the map
-			// we want to swap with the value
-			words[index] = val // eg. you -> me
+		if ok {
+			//swap with the value
+			words[index] = val
 		}
 	}
 	return strings.Join(words, " ")
 }
 
+//Func for taking in user input and crafting elizas response
 func Ask(userInput string) string {
 	responses := buildResponseList()
-	for _, resp := range responses { // look at every single response/pattern/answers
+	for _, resp := range responses { // look at every single response/answers
 		if resp.re.MatchString(userInput) {
 			match := resp.re.FindStringSubmatch(userInput)
 			//match[0] is full match, match[1] is the capture group
@@ -113,22 +120,16 @@ func Ask(userInput string) string {
 	return "Im sorry I don't follow what you mean, could you clarify that for me?" // catch all.
 }
 
-//adapted from ajax repo
+//Func for handling the user input from the webapp and sending the response back to the page
+//adapted from adapted from https://github.com/data-representation/go-ajax
 func userinputhandler(w http.ResponseWriter, r *http.Request) {
 
 	userInput := strings.ToLower(r.URL.Query().Get("value"))
-
-	if strings.Contains(strings.ToLower(userInput), "bye") {
-		fmt.Fprintf(w, "%s", Ask(userInput))
-		timer := time.NewTimer(time.Second * 2)
-		<-timer.C
-		os.Exit(3)
-
-	} else {
-		fmt.Fprintf(w, "%s", Ask(userInput)) //Carry out the conversation with eliza
-	}
+	fmt.Fprintf(w, "%s", Ask(userInput))
 }
 
+//adapted from adapted from https://github.com/data-representation/go-ajax
+//Func for serving the SPA and linking the userinputhandler
 func main() {
 	//adapted from ajax
 	fs := http.FileServer(http.Dir("web"))
@@ -137,7 +138,7 @@ func main() {
 	http.HandleFunc("/user-input", userinputhandler)
 	http.ListenAndServe(":8080", nil)
 }
-
+//Func was used for checking if the userinput and responses were working on the cli
 /*func main() {
 	fmt.Println("Hi my name is Eliza, whats yours?")
 	for reader := bufio.NewReader(os.Stdin); ; {

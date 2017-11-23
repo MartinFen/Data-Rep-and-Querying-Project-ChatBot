@@ -2,81 +2,87 @@
 <html lang="en">
   <head>
     <title>Eliza written in Go</title>
-    <!-- adapted from stackoverflow post -->
-    <!-- https://stackoverflow.com/questions/30556285/html-css-how-to-get-fixed-margin-between-body-and-footer-->
+    <!-- adapted from https://stackoverflow.com/questions/30556285/html-css-how-to-get-fixed-margin-between-body-and-footer-->
     <style type="text/css">
-    body {
-        padding-top: 60px;
-        padding-bottom: 60px;
-        padding-left: 60px;
-        padding-right:60px;
-    }
-    .footer {
-        padding-top: 5px;
-        padding-bottom: 5px;
-    } 
+      body {
+          padding-top: 60px;
+          padding-bottom: 60px;
+          padding-left: 60px;
+          padding-right:60px;
+      }
+      .footer {
+          padding-top: 5px;
+          padding-bottom: 5px;
+      }
     </style>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <!-- https://v4-alpha.getbootstrap.com/components/navbar/ -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
   </head>
-  <body>
-    <!--bootstrap -->
+  <body style="background-image:url(https://i.ytimg.com/vi/JquobII5VjA/maxresdefault.jpg)">
+    <!-- addapted from https://v4-alpha.getbootstrap.com/components/navbar/ -->
     <div class="container-fluid">
-      <nav class="navbar fixed-top bg-dark text-white">
+      <nav class="navbar fixed-top header bg-dark text-white">
         <h3>Eliza chatbot</h3>
         <h4>G00291266 - Martin Fennell</h4>
       </nav>
-      <!--bootstrap -->
-      <ul class="list-group bg-light" id="output-area"></ul>
-      <!--bootstrap -->
-      <!--ajax repo -->
-      
-        <form id="user-input-form">
-        <nav class="navbar bg-dark input-group fixed-bottom footer">
-          <span class="btn-group align-content-center"><!--issue with text box cant make it strech the width bad hack (style="width: 500%") -->
-            <input type="text" id="user-input" class="form-control" placeholder="Type 'Hello' to begin">
-            <button class="btn btn-outline-primary">Enter</button>
+      <ul class="list-group" id="output-area"></ul>
+      <!-- adapted from https://github.com/data-representation/go-ajax -->
+      <form class="navbar bg-dark input-group fixed-bottom footer" id="user-input-form">
+          <span class="btn-group" style="width: 100% ">
+            <input type="text" id="user-input" class="form-control"  placeholder="Type 'Hello' to begin">
+            <button class="btn btn-outline-primary" id="user-input-submit">Enter</button>
           </span>
-        </nav>
-        </form>  
-      
+      </form>    
     </div>
     <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <script>  
-      //ajax repo
-      //https://github.com/data-representation/data-representation.github.io/blob/master/notes/ajax.md
-      //adapted from https://stackoverflow.com/questions/16908526/html-how-to-do-error-checking-for-null-value-input-of-textarea-in-javascript
+      //adapted from https://github.com/data-representation/go-ajax
+      //adapted from https://github.com/data-representation/data-representation.github.io/blob/master/notes/ajax.md
+      //Jquery used for detecting when a submit event has occured
       $("#user-input-form").submit(
         function(event) {
           event.preventDefault();
-          
+          //adapted from https://stackoverflow.com/questions/16908526/html-how-to-do-error-checking-for-null-value-input-of-textarea-in-javascript
+          //Check for null input from user and respond
           if (document.forms[0].elements['user-input'].value=='') {
-            $('#output-area').append('<li class="list-group-item bg-dark text-white font-italic">' + 'User: ' + $('#user-input').val() + '</li>');
+            $('#output-area').append('<li class="list-group-item bg-dark text-white font-italic" >' + 'User: ' + $('#user-input').val() + '</li>');
+              window.scrollTo(0,document.body.scrollHeight);
             setTimeout(function(){
                 $('#output-area').append('<li class="list-group-item bg-dark text-white font-italic">'+'Eliza: Am I getting the silent treatment?' + '</li>');
+                window.scrollTo(0,document.body.scrollHeight);
             }, 500);
+            //If input not null get the user input/eliza response and add them to the list in the right order
           } else {
             $('#output-area').append('<li class="list-group-item bg-dark text-white font-italic">' +'User: '+ $('#user-input').val() + '</li>');
-            
+            window.scrollTo(0,document.body.scrollHeight);
             $.get('/user-input', {value:$('#user-input').val()}).done(function(data){
               setTimeout(function(){
                 $('#output-area').append('<li class="list-group-item bg-dark text-white font-italic">'+ 'Eliza: ' + data + '</li>');
+                window.scrollTo(0,document.body.scrollHeight);
               }, 500);
             })
-          } 
+            //adapted from https://stackoverflow.com/questions/1414365/disable-enable-an-input-with-jquery
+            //adapted from https://stackoverflow.com/questions/24545949/how-to-disable-textbox-from-html-disabled-attribute-using-jquery
+            //Disables input and button after user has submited matched phrase
+            if( $('#user-input').val() == 'Bye'|| $('#user-input').val() == 'bye') {
+              $('#user-input').prop('disabled',true);
+              $('#user-input-submit').prop('disabled',true);
+            } else {
+              $(this).prop('disabled',false);
+            }
+          }  
       });
-      //Graphics programming lab 4
+      //adapted from graphics programming lab 4
+      //Clears text box after user has submitted an input and key is released
 		  $('#user-input').on('keyup', function(event) {
 			  switch (event.which) {
           case 13:
-            $(this).val("");
-            break;  
+          $(this).val("");
+          break;  
         }
       });
     </script>
