@@ -19,7 +19,7 @@ A [chatbot](https://en.wikipedia.org/wiki/Chatbot) is usualy a computer program 
 - To start a new dialogue refresh the page.
 
 | User Input Examples | Responses Examples |
-| ------ | ------ |
+| :------ | :------ |
 | Hello | Hi, could I start by getting your name? |
 | My name is Martin | It's nice to meet you martin. How can I help? |
 | I am not feeling myself | Did you come to me because you are not feeling yourself? |
@@ -36,6 +36,7 @@ A [chatbot](https://en.wikipedia.org/wiki/Chatbot) is usualy a computer program 
 | Sorry for being an emotional wreck | There are many times when no apology is needed. |
 |  | Am I getting the silent treatment? |
 | Bye | Thank you, that will be $300. Have a good day! |
+
 For further knowledge of the regex usecd in the project please see [patterns file](https://github.com/MartinFen/Data-Rep-and-Querying-Project-ChatBot/blob/master/data/patterns.dat)
 
 #### To view more info using curl (optional)
