@@ -20,7 +20,7 @@ type Response struct {
 	responses []string
 }
 
-//Func for reading in file contents and building a list of structs with each REGEX pattern its corrisponding responses.
+//Func for reading in file contents and building a list of structs with each REGEX pattern and its corrisponding responses.
 //adapted from a group session
 func buildResponseList() []Response {
 	//empty struct
@@ -138,6 +138,7 @@ func main() {
 	http.HandleFunc("/user-input", userinputhandler)
 	http.ListenAndServe(":8080", nil)
 }
+
 //Func was used for checking if the userinput and responses were working on the cli
 /*func main() {
 	fmt.Println("Hi my name is Eliza, whats yours?")
